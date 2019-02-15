@@ -471,7 +471,7 @@ namespace PackageExplorerViewModel
 
         #endregion
 
-        #region NavigationCommand
+        #region LoadCommand
 
         private bool LoadMoreCommandCanExecute(int endPackageNum)
         {
