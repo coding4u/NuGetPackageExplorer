@@ -10,10 +10,8 @@ namespace PackageExplorerViewModel
         int EndPackage { get; }
         bool IsLastPage { get; }
 
-        Task<IList<T>> GetItemsForCurrentPage(CancellationToken token);
+        Task<IList<T>> GetItemsAsync(CancellationToken token);
 
-        bool MoveFirst();
         bool MoveNext();
-        bool MovePrevious();
     }
 }

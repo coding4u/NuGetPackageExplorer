@@ -38,7 +38,7 @@ namespace PackageExplorerViewModel
 
         public bool IsLastPage => CurrentPage == _lastPageIndex;
 
-        public async Task<IList<T>> GetItemsForCurrentPage(CancellationToken token)
+        public async Task<IList<T>> GetItemsAsync(CancellationToken token)
         {
             IEnumerable<IPackageSearchMetadata>? result = null;
 
@@ -95,27 +95,11 @@ namespace PackageExplorerViewModel
             return list;
         }
 
-        public bool MoveFirst()
-        {
-            CurrentPage = 0;
-            return true;
-        }
-
         public bool MoveNext()
         {
             if (!_lastPageIndex.HasValue || CurrentPage < _lastPageIndex)
             {
                 CurrentPage++;
-                return true;
-            }
-            return false;
-        }
-
-        public bool MovePrevious()
-        {
-            if (CurrentPage > 0)
-            {
-                CurrentPage--;
                 return true;
             }
             return false;

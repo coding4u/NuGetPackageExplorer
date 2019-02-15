@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using NuGetPackageExplorer.Types;
 using PackageExplorerViewModel;
@@ -18,6 +19,7 @@ namespace PackageExplorer
         private readonly ISettingsManager _settings;
         private readonly PackageChooserViewModel _viewModel;
         private string? _pendingSearch;
+        private ScrollViewer _scrollViewer;
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public PackageChooserDialog(ISettingsManager settings, PackageChooserViewModel viewModel)
@@ -215,6 +217,40 @@ namespace PackageExplorer
             }
 
             e.Handled = true;
+        }
+
+        private void List_Loaded(object sender, RoutedEventArgs e)
+        {
+            ListBoxPackages.Loaded -= List_Loaded;
+
+            var c = VisualTreeHelper.GetChild(ListBoxPackages, 0) as Border;
+            if (c == null)
+            {
+                return;
+            }
+
+            c.Padding = new Thickness(0);
+            _scrollViewer = VisualTreeHelper.GetChild(c, 0) as ScrollViewer;
+            if (_scrollViewer == null)
+            {
+                return;
+            }
+
+            _scrollViewer.Padding = new Thickness(0);
+            _scrollViewer.ScrollChanged += ScrollViewer_ScrollChanged;
+        }
+
+        private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            var first = _scrollViewer.VerticalOffset;
+            var last = _scrollViewer.ViewportHeight + first;
+            if (_scrollViewer.ViewportHeight > 0)
+            {
+                if (_viewModel.LoadMoreCommand.CanExecute((int)last))
+                {
+                    _viewModel.LoadMoreCommand.Execute((int)last);
+                }
+            }
         }
     }
 }
